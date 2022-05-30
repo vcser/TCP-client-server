@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,14 +39,9 @@ int main(int argc, const char *argv[]) {
     printf("file size: %d\n", file_size);
 
     // send file content
-    // create buffer of file size
-    char *buff = malloc(file_size * sizeof(char));
-    fread(buff, sizeof(char), file_size, f);
-    // send with progress bar
-    tcp_send_status(server.sock, buff, file_size);
+    tcp_send_file(server.sock, f, file_size);
 
     tcp_close(server.sock);
-    free(buff);
     fclose(f);
 
     return 0;

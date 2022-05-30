@@ -114,34 +114,28 @@ uint32_t tcp_recv_size(int sock) {
     return size;
 }
 
-void tcp_send_status(int sock, char *buff, int size) {
-    int n;
-    char *buffp = buff;
-    int max_size = size;
-    int len = 0;
-    while ((n = write(sock, buffp, min(STEP, max_size))) > 0) {
-        buffp += n;
+void tcp_send_file(int sock, FILE *file, int size) {
+    char buff[STEP] = {0};
+    int n, max_size = size, len = 0;
+    while ((n = write(sock, buff, min(STEP, max_size))) > 0) {
         max_size -= n;
         len += n;
         int progress = len * 100 / size;
         progress_bar(progress);
-        usleep(5000);
+        fread(buff, sizeof(char), n, file);
     }
     printf("\n");
 }
 
-void tcp_recv_status(int sock, char *buff, int size) {
-    int n;
-    char *buffp = buff;
-    int max_size = size;
-    int len = 0;
-    while ((n = read(sock, buffp, min(STEP, max_size))) > 0) {
-        buffp += n;
+void tcp_recv_file(int sock, FILE *file, int size) {
+    char buff[STEP];
+    int n, max_size = size, len = 0;
+    while ((n = read(sock, buff, min(STEP, max_size))) > 0) {
         max_size -= n;
         len += n;
         int progress = len * 100 / size;
         progress_bar(progress);
-        usleep(10000);
+        fwrite(buff, sizeof(char), n, file);
     }
     printf("\n");
 }

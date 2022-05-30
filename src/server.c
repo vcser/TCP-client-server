@@ -32,14 +32,8 @@ int main(void) {
         printf("file size: %d\n", file_size);
 
         // recieve file contents
-        // create buffer of file size
-        char *buff = malloc(file_size*sizeof(char));
-        // recieve with progress bar
-        tcp_recv_status(sock, buff, file_size);
-
-        // write buffer to file
         FILE *f = fopen("test", "w");
-        fwrite(buff, sizeof(char), file_size, f);
+        tcp_recv_file(sock, f, file_size);
         fclose(f);
 
         tcp_close(sock);

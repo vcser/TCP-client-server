@@ -3,6 +3,7 @@
 
 #include <netinet/in.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define PORT 10000
 
@@ -42,9 +43,9 @@ void tcp_recv(int sock, void *data, size_t size);
 void tcp_send_size(int sock, uint32_t n);
 uint32_t tcp_recv_size(int sock);
 
-// enviar y recibir con barra de progreso
-void tcp_send_status(int sock, char *buff, int size);
-void tcp_recv_status(int sock, char *buff, int size);
+// enviar y recibir archivos con barra de progreso
+void tcp_send_file(int sock, FILE *file, int size);
+void tcp_recv_file(int sock, FILE *file, int size);
 
 // Cierra la conexión
 void tcp_close(int sock);
