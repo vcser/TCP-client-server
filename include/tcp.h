@@ -2,8 +2,10 @@
 #define TCP_H
 
 #include <netinet/in.h>
+#include <stdint.h>
 
-// https://cl1lib.org/book/829755/45845b
+#define PORT 10000
+
 
 // Servidor
 struct tcp_server_t {
@@ -35,6 +37,14 @@ void tcp_client_connect(struct tcp_client_t *client, const char *host,
 // Envía y recibe datos
 void tcp_send(int sock, const void *data, size_t size);
 void tcp_recv(int sock, void *data, size_t size);
+
+// enviar y recibir ints
+void tcp_send_size(int sock, uint32_t n);
+uint32_t tcp_recv_size(int sock);
+
+// enviar y recibir con barra de progreso
+void tcp_send_status(int sock, char *buff, int size);
+void tcp_recv_status(int sock, char *buff, int size);
 
 // Cierra la conexión
 void tcp_close(int sock);
