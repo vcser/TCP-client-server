@@ -32,7 +32,7 @@ int main(void) {
         printf("file size: %d\n", file_size);
 
         // recieve file contents
-        FILE *f = fopen("test", "w");
+        FILE *f = fopen(file_name, "w");
         tcp_recv_file(sock, f, file_size);
         fclose(f);
 
