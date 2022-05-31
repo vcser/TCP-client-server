@@ -117,18 +117,19 @@ uint32_t tcp_recv_size(int sock) {
 void tcp_send_file(int sock, FILE *file, int size) {
     char buff[STEP] = {0};
     int n = min(size, STEP), max_size = size, len = 0;
-    do {
+    fread(buff, sizeof(char), n, file);
+    while ((n = write(sock, buff, min(STEP, max_size))) > 0) {
         max_size -= n;
         len += n;
         int progress = len * 100 / size;
         progress_bar(progress);
         fread(buff, sizeof(char), n, file);
-    } while ((n = write(sock, buff, min(STEP, max_size))) > 0);
+    }
     printf("\n");
 }
 
 void tcp_recv_file(int sock, FILE *file, int size) {
-    char buff[STEP] = {0};
+    char buff[STEP];
     int n, max_size = size, len = 0;
     while ((n = read(sock, buff, min(STEP, max_size))) > 0) {
         max_size -= n;
