@@ -116,7 +116,7 @@ uint32_t tcp_recv_size(int sock) {
 
 void tcp_send_file(int sock, FILE *file, int size) {
     char buff[STEP] = {0};
-    int n = 0, max_size = size, len = 0;
+    int n = min(size, STEP), max_size = size, len = 0;
     do {
         max_size -= n;
         len += n;
@@ -128,7 +128,7 @@ void tcp_send_file(int sock, FILE *file, int size) {
 }
 
 void tcp_recv_file(int sock, FILE *file, int size) {
-    char buff[STEP];
+    char buff[STEP] = {0};
     int n, max_size = size, len = 0;
     while ((n = read(sock, buff, min(STEP, max_size))) > 0) {
         max_size -= n;
