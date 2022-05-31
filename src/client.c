@@ -14,6 +14,10 @@ int main(int argc, const char *argv[]) {
     const char *file_name = argv[2];
 
     FILE *f = fopen(argv[2], "r");
+    if (f == NULL) {
+        fprintf(stderr, "Error: could not find the file %s\n", file_name);
+        exit(EXIT_FAILURE);
+    }
     // get file size
     fseek(f, 0, SEEK_END);
     int file_size = ftell(f);
