@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define PORT 10000
-
+#define STEP 100
 
 // Servidor
 struct tcp_server_t {
@@ -44,8 +44,8 @@ void tcp_send_size(int sock, uint32_t n);
 uint32_t tcp_recv_size(int sock);
 
 // enviar y recibir archivos con barra de progreso
-void tcp_send_file(int sock, FILE *file, int size);
-void tcp_recv_file(int sock, FILE *file, int size);
+void tcp_send_file(int sock, const char *path, int size);
+void tcp_recv_file(int sock, const char *path, int size);
 
 // Cierra la conexión
 void tcp_close(int sock);

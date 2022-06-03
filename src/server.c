@@ -1,10 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sodium.h>
 
 #include "tcp.h"
+#include "crypto.h"
 
-int main(void) {
+int main(int argc, char *argv[]) {
+    // crypto stuff
+    if (sodium_init() != 0) {
+        // error
+        fprintf(stderr, "Error: could not initialize libsodium\n");
+        exit(EXIT_FAILURE);
+    }
+
+    struct crypto_context context;
+    // read key file
+    FILE *key = fopen("key", "rb");
+    if (key == NULL) {
+        fprintf(stderr, "Error: could not read key file\n");
+        exit(EXIT_FAILURE);
+    }
+    fread(context.k, 1, crypto_secretstream_xchacha20poly1305_KEYBYTES, key);
+    fclose(key);
+
+
     struct tcp_server_t server;
 
     tcp_server_create(&server, PORT);
@@ -32,9 +52,8 @@ int main(void) {
         printf("file size: %d\n", file_size);
 
         // recieve file contents
-        FILE *f = fopen(file_name, "w");
-        tcp_recv_file(sock, f, file_size);
-        fclose(f);
+        //tcp_recv_file(sock, file_name, file_size);
+        recv_encrypted_file(&context, sock, file_name, file_size);
 
         tcp_close(sock);
         break;

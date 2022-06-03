@@ -1,11 +1,32 @@
+#include <sodium/crypto_secretstream_xchacha20poly1305.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sodium.h>
+#include <crypto.h>
 
 #include "tcp.h"
 
 int main(int argc, const char *argv[]) {
+    // crypto struff
+    if (sodium_init() != 0) {
+        // error
+        fprintf(stderr, "Error: could not initialize libsodium\n");
+        exit(EXIT_FAILURE);
+    }
+
+    struct crypto_context context;
+    // read key file
+    FILE *key = fopen("key", "rb");
+    if (key == NULL) {
+        fprintf(stderr, "Error: could not read key file\n");
+        exit(EXIT_FAILURE);
+    }
+    fread(context.k, 1, crypto_secretstream_xchacha20poly1305_KEYBYTES, key);
+    fclose(key);
+
+
     if (argc < 3) {
         printf("usage: %s <ip> <file>", argv[0]);
         exit(0);
@@ -22,6 +43,7 @@ int main(int argc, const char *argv[]) {
     fseek(f, 0, SEEK_END);
     int file_size = ftell(f);
     rewind(f);
+    fclose(f);
 
     struct tcp_client_t server;
 
@@ -43,10 +65,10 @@ int main(int argc, const char *argv[]) {
     printf("file size: %d\n", file_size);
 
     // send file content
-    tcp_send_file(server.sock, f, file_size);
+    // tcp_send_file(server.sock, file_name, file_size);
+    send_encrypted_file(&context, server.sock, file_name, file_size);
 
     tcp_close(server.sock);
-    fclose(f);
 
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "tcp.h"
+#include "util.h"
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -7,25 +8,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sodium.h>
 
 #define BACKLOG 5
-#define STEP 100
-#define PROGRESS_BAR_LEN 50
-
-int min(int a, int b) {
-    return a < b ? a : b;
-}
-
-void progress_bar(int progress) {
-    int chars = progress * PROGRESS_BAR_LEN / 100;
-    printf("\r[");
-    for (int i = 0; i < chars; i++)
-        printf("#");
-    for (int i = 0; i < PROGRESS_BAR_LEN - chars; i++)
-        printf(" ");
-    printf("] %d%%", progress);
-    fflush(stdout);
-}
 
 void tcp_server_create(struct tcp_server_t *server, int port) {
     // Crear socket de escucha (se guarda en server->listen_sock)
@@ -114,21 +99,32 @@ uint32_t tcp_recv_size(int sock) {
     return size;
 }
 
-void tcp_send_file(int sock, FILE *file, int size) {
+void tcp_send_file(int sock, const char *path, int size) {
+    FILE *file = fopen(path, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error: could not open file %s\n", path);
+        exit(EXIT_FAILURE);
+    }
     char buff[STEP] = {0};
-    int n = min(size, STEP), max_size = size, len = 0;
-    fread(buff, sizeof(char), n, file);
-    while ((n = write(sock, buff, min(STEP, max_size))) > 0) {
+    int n = min(size, STEP), max_size = size + n, len = -n;
+    //fread(buff, sizeof(char), n, file);
+    do {
         max_size -= n;
         len += n;
         int progress = len * 100 / size;
         progress_bar(progress);
         fread(buff, sizeof(char), n, file);
-    }
+    } while ((n = write(sock, buff, min(STEP, max_size))) > 0);
+    fclose(file);
     printf("\n");
 }
 
-void tcp_recv_file(int sock, FILE *file, int size) {
+void tcp_recv_file(int sock, const char *path, int size) {
+    FILE *file = fopen(path, "w");
+    if (file == NULL) {
+        fprintf(stderr, "Error: could not open file %s\n", path);
+        exit(EXIT_FAILURE);
+    }
     char buff[STEP];
     int n, max_size = size, len = 0;
     while ((n = read(sock, buff, min(STEP, max_size))) > 0) {
@@ -138,6 +134,7 @@ void tcp_recv_file(int sock, FILE *file, int size) {
         progress_bar(progress);
         fwrite(buff, sizeof(char), n, file);
     }
+    fclose(file);
     printf("\n");
 }
 
