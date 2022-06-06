@@ -1,12 +1,11 @@
-#include <sodium/crypto_secretstream_xchacha20poly1305.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sodium.h>
-#include <crypto.h>
 
 #include "tcp.h"
+#include "crypto.h"
 
 int main(int argc, const char *argv[]) {
     // crypto struff

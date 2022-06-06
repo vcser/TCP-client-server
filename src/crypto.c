@@ -70,6 +70,18 @@ void send_encrypted_file(struct crypto_context *context, int sock, const char *p
     printf("\n");
 }
 
+// probando funcion para dejar mas limpio el codigo
+unsigned char *encrypt_buffer(struct crypto_context *context, unsigned char *buf_in, unsigned int buf_len, unsigned char tag) {
+    unsigned char *buf_out = malloc(buf_len + crypto_secretstream_xchacha20poly1305_ABYTES);
+    
+    if (crypto_secretstream_xchacha20poly1305_push(&context->state, buf_out, NULL, buf_in, buf_len, NULL, 0, tag) == -1) {
+        fprintf(stderr, "Error: could not push buffer\n"); 
+        exit(EXIT_FAILURE);
+    }
+
+    return buf_out;
+}
+
 void recv_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size) {
     FILE *file = fopen("file-SERVER", "w");
     if (file == NULL) {
@@ -86,11 +98,9 @@ void recv_encrypted_file(struct crypto_context *context, int sock, const char *p
         fprintf(stderr, "Error: bad crypto header\n");
         exit(0);
     }
-    int i = 0;
     while ((n = read(sock, buf_in, min(STEP, max_size) + crypto_secretstream_xchacha20poly1305_ABYTES)) > 0) {
         if (crypto_secretstream_xchacha20poly1305_pull(&context->state, buf_out, &n, &tag, buf_in, n, NULL, 0) == -1) {
             printf("n: %lld\n", n);
-            printf("i = %d\n", i);
             fprintf(stderr, "Error: corrupt buffer\n");
             exit(EXIT_FAILURE);
         }
@@ -99,7 +109,6 @@ void recv_encrypted_file(struct crypto_context *context, int sock, const char *p
         int progress = len * 100 / file_size;
         progress_bar(progress);
         fwrite(buf_out, sizeof(char), n, file);
-        i++;
     }
     fclose(file);
     printf("\n");
