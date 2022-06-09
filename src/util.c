@@ -1,13 +1,12 @@
 #include "util.h"
+
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define PROGRESS_BAR_LEN 50
 
-int min(int a, int b) {
-    return a < b ? a : b;
-}
+int min(int a, int b) { return a < b ? a : b; }
 
 void progress_bar(int progress) {
     int chars = progress * PROGRESS_BAR_LEN / 100;

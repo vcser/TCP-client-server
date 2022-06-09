@@ -10,7 +10,9 @@ struct crypto_context {
 };
 
 void genkey(const char *file);
-void send_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size);
-void recv_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size);
+void send_encrypted_file(struct crypto_context *context, int sock,
+                         const char *path, int file_size);
+void recv_encrypted_file(struct crypto_context *context, int sock,
+                         const char *path, int file_size);
 
 #endif

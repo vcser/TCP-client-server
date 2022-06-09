@@ -1,10 +1,10 @@
+#include <sodium.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sodium.h>
 
-#include "tcp.h"
 #include "crypto.h"
+#include "tcp.h"
 #include "util.h"
 
 int main(int argc, char *argv[]) {
@@ -15,15 +15,14 @@ int main(int argc, char *argv[]) {
     // parsear los parametros cli
     for (int i = 1; i < argc; i++) {
         const char *option = argv[i];
-        if (option[0] != '-') continue;
+        if (option[0] != '-')
+            continue;
         if (option[1] == 'k') {
             key_file = argv[i + 1];
-        }
-        else if (option[1] == 'p') {
+        } else if (option[1] == 'p') {
             port = atoi(argv[i + 1]);
         }
     }
-
 
     // crear servidor
     struct tcp_server_t server;
@@ -50,7 +49,8 @@ int main(int argc, char *argv[]) {
         if (flags & UNENCRYPTED) {
             printf("recibiendo archivo encriptado\n");
             goto NOENCRYPTION;
-        } else printf("recibiendo archivo encriptado\n");
+        } else
+            printf("recibiendo archivo encriptado\n");
 
         // inicializar libsodium
         if (sodium_init() != 0) {
@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Error: could not read key file\n");
             exit(EXIT_FAILURE);
         }
-        fread(context.k, 1, crypto_secretstream_xchacha20poly1305_KEYBYTES, key);
+        fread(context.k, 1, crypto_secretstream_xchacha20poly1305_KEYBYTES,
+              key);
         fclose(key);
 
 NOENCRYPTION:;
@@ -79,8 +80,10 @@ NOENCRYPTION:;
         printf("file size: %d\n", file_size);
 
         // recibir los contenidos del archivo
-        if (flags & UNENCRYPTED) tcp_recv_file(sock, file_name, file_size);
-        else recv_encrypted_file(&context, sock, file_name, file_size);
+        if (flags & UNENCRYPTED)
+            tcp_recv_file(sock, file_name, file_size);
+        else
+            recv_encrypted_file(&context, sock, file_name, file_size);
 
         tcp_close(sock);
         break;

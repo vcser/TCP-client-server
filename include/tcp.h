@@ -50,4 +50,4 @@ void tcp_recv_file(int sock, const char *path, int size);
 // Cierra la conexión
 void tcp_close(int sock);
 
-#endif  // TCP_H
+#endif // TCP_H

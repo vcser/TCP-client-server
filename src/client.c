@@ -1,11 +1,11 @@
+#include <sodium.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sodium.h>
 
-#include "tcp.h"
 #include "crypto.h"
+#include "tcp.h"
 #include "util.h"
 
 int main(int argc, const char *argv[]) {
@@ -23,13 +23,13 @@ int main(int argc, const char *argv[]) {
     // parsear los parametros cli
     for (int i = 3; i < argc; i++) {
         const char *option = argv[i];
-        if (option[0] != '-') continue;
+        if (option[0] != '-')
+            continue;
         if (option[1] == 'u')
             flags |= UNENCRYPTED;
         else if (option[1] == 'k') {
             key_file = argv[i + 1];
-        }
-        else if (option[1] == 'p') {
+        } else if (option[1] == 'p') {
             port = atoi(argv[i + 1]);
         }
     }
@@ -38,7 +38,8 @@ int main(int argc, const char *argv[]) {
     if (flags & UNENCRYPTED) {
         printf("enviando archivo no encriptado\n");
         goto NOENCRYPTION;
-    } else printf("enviando archivo encriptado\n");
+    } else
+        printf("enviando archivo encriptado\n");
 
     // inicializar libsodium
     if (sodium_init() != 0) {
@@ -66,7 +67,7 @@ NOENCRYPTION:;
     // enviar el tamaño del nombre del archivo
     tcp_send_size(server.sock, strlen(argv[2]) + 1);
     // enviar el nombre del archivo
-    tcp_send(server.sock, file_name, strlen(argv[2])+1);
+    tcp_send(server.sock, file_name, strlen(argv[2]) + 1);
     // decirle al cliente si los datos enviados estaran encriptados
     tcp_send(server.sock, &flags, 1);
     // enviar el tamaño del archivo
@@ -78,8 +79,10 @@ NOENCRYPTION:;
     printf("file size: %d\n", file_size);
 
     // enviar el contenido del archivo
-    if (flags & UNENCRYPTED) tcp_send_file(server.sock, file_name, file_size);
-    else send_encrypted_file(&context, server.sock, file_name, file_size);
+    if (flags & UNENCRYPTED)
+        tcp_send_file(server.sock, file_name, file_size);
+    else
+        send_encrypted_file(&context, server.sock, file_name, file_size);
 
     tcp_close(server.sock);
 
