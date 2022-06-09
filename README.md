@@ -6,15 +6,15 @@ Redes de Computadores – Laboratorio 1: Transferencia de archivos por TCP
 - Vicente Cser
 
 ## Dependencias
-1. libsodium
-2. cmake
+- libsodium
+- cmake
 
 ## Instrucciones compilacion
 ```
-1. mkdir build 
-2. cd build
-3. cmake ..
-4. make
+mkdir build 
+cd build
+cmake ..
+make
 ```
 
 ## Modo de Uso
