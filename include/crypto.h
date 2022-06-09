@@ -9,6 +9,7 @@ struct crypto_context {
     crypto_secretstream_xchacha20poly1305_state state;
 };
 
+void genkey(const char *file);
 void send_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size);
 void recv_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size);
 

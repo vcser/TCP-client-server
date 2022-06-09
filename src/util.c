@@ -1,5 +1,7 @@
 #include "util.h"
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define PROGRESS_BAR_LEN 50
 
@@ -18,3 +20,15 @@ void progress_bar(int progress) {
     fflush(stdout);
 }
 
+int fsize(const char *path) {
+    FILE *f = fopen(path, "r");
+    if (f == NULL) {
+        fprintf(stderr, "Error: could not find the file %s\n", path);
+        exit(EXIT_FAILURE);
+    }
+    fseek(f, 0, SEEK_END);
+    int size = ftell(f);
+    rewind(f);
+    fclose(f);
+    return size;
+}

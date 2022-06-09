@@ -107,7 +107,6 @@ void tcp_send_file(int sock, const char *path, int size) {
     }
     char buff[STEP] = {0};
     int n = min(size, STEP), max_size = size + n, len = -n;
-    //fread(buff, sizeof(char), n, file);
     do {
         max_size -= n;
         len += n;

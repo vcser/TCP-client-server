@@ -10,33 +10,12 @@
 #include "util.h"
 #include "crypto.h"
 
-struct crypto_context crypto_init() {
-    if (sodium_init() != 0) {
-        // error
-        fprintf(stderr, "Error: could not initialize libsodium\n");
-        exit(EXIT_FAILURE);
-    }
-    struct crypto_context context;
-    
-    crypto_secretstream_xchacha20poly1305_init_push(&context.state, context.header, context.k);
-    return context;
-}
-
-void crypto_genkey(const char *file) {
+void genkey(const char *file) {
     FILE *f = fopen(file, "wb");
     unsigned char k[crypto_secretstream_xchacha20poly1305_KEYBYTES];
     crypto_secretstream_xchacha20poly1305_keygen(k);
     fwrite(k, 1, crypto_secretstream_xchacha20poly1305_KEYBYTES, f); 
     fclose(f);
-}
-
-unsigned long long crypto_encrypt_stream(unsigned char *buff, size_t size, struct crypto_context *context, unsigned char tag) {
-    unsigned char buff_out[STEP + crypto_secretstream_xchacha20poly1305_ABYTES];
-    unsigned long long out_len;
-
-    crypto_secretstream_xchacha20poly1305_push(&context->state, buff_out, &out_len, buff, STEP, NULL, 0, tag);
-    
-    return out_len;
 }
 
 void send_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size) {
@@ -70,20 +49,8 @@ void send_encrypted_file(struct crypto_context *context, int sock, const char *p
     printf("\n");
 }
 
-// probando funcion para dejar mas limpio el codigo
-unsigned char *encrypt_buffer(struct crypto_context *context, unsigned char *buf_in, unsigned int buf_len, unsigned char tag) {
-    unsigned char *buf_out = malloc(buf_len + crypto_secretstream_xchacha20poly1305_ABYTES);
-    
-    if (crypto_secretstream_xchacha20poly1305_push(&context->state, buf_out, NULL, buf_in, buf_len, NULL, 0, tag) == -1) {
-        fprintf(stderr, "Error: could not push buffer\n"); 
-        exit(EXIT_FAILURE);
-    }
-
-    return buf_out;
-}
-
 void recv_encrypted_file(struct crypto_context *context, int sock, const char *path, int file_size) {
-    FILE *file = fopen("file-SERVER", "w");
+    FILE *file = fopen(path, "w");
     if (file == NULL) {
         fprintf(stderr, "Error: could not open file %s\n", path);
         exit(EXIT_FAILURE);

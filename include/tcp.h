@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define PORT 10000
+#define DEFAULTPORT 10000
 #define STEP 100
 
 // Servidor
