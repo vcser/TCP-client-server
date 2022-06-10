@@ -36,8 +36,8 @@ make
 ```
 ./client <ip> <archivo> [opciones]
 ```
-  ip: Direccion ipv4 del servidor
-  archivo : Direccion del archivo que se desea enviar
+  ip: Direccion ipv4 del servidor  
+  archivo : Direccion del archivo que se desea enviar  
   Opciones:
   - -k : Entregar el nombre del archivo con la llave secreta
   - -p : Entregar el puerto del servidor al que se conectara
