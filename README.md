@@ -6,15 +6,15 @@ Redes de Computadores – Laboratorio 1: Transferencia de archivos por TCP
 - Vicente Cser
 
 ## Dependencias
-1. libsodium
-2. cmake
+- libsodium
+- cmake
 
 ## Instrucciones compilacion
 ```
-1. mkdir build 
-2. cd build
-3. cmake ..
-4. make
+mkdir build 
+cd build
+cmake ..
+make
 ```
 
 ## Modo de Uso
@@ -36,8 +36,8 @@ Redes de Computadores – Laboratorio 1: Transferencia de archivos por TCP
 ```
 ./client <ip> <archivo> [opciones]
 ```
-  ip: Direccion ipv4 del servidor
-  archivo : Direccion del archivo que se desea enviar
+  ip: Direccion ipv4 del servidor  
+  archivo : Direccion del archivo que se desea enviar  
   Opciones:
   - -k : Entregar el nombre del archivo con la llave secreta
   - -p : Entregar el puerto del servidor al que se conectara
