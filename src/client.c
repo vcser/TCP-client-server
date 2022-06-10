@@ -35,11 +35,8 @@ int main(int argc, const char *argv[]) {
     }
 
     // perdon por usar goto
-    if (flags & UNENCRYPTED) {
-        printf("enviando archivo no encriptado\n");
+    if (flags & UNENCRYPTED)
         goto NOENCRYPTION;
-    } else
-        printf("enviando archivo encriptado\n");
 
     // inicializar libsodium
     if (sodium_init() != 0) {
@@ -76,7 +73,7 @@ NOENCRYPTION:;
     // imprimir info del archivo que se esta enviando
     printf("Sending...\n");
     printf("file name: %s\n", file_name);
-    printf("file size: %d\n", file_size);
+    printf("file size: %d bytes\n", file_size);
 
     // enviar el contenido del archivo
     if (flags & UNENCRYPTED)

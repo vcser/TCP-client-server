@@ -46,11 +46,8 @@ int main(int argc, char *argv[]) {
 
         // saber si el archivo recibido esta encriptado
         tcp_recv(sock, &flags, 1);
-        if (flags & UNENCRYPTED) {
-            printf("recibiendo archivo encriptado\n");
+        if (flags & UNENCRYPTED) 
             goto NOENCRYPTION;
-        } else
-            printf("recibiendo archivo encriptado\n");
 
         // inicializar libsodium
         if (sodium_init() != 0) {
@@ -77,7 +74,7 @@ NOENCRYPTION:;
         // imprimir informacion del archivo que se esta recibiendo
         printf("Recieving...\n");
         printf("file name: %s\n", file_name);
-        printf("file size: %d\n", file_size);
+        printf("file size: %d bytes\n", file_size);
 
         // recibir los contenidos del archivo
         if (flags & UNENCRYPTED)
